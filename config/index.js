@@ -32,8 +32,8 @@ module.exports = {
 		// In our experience, they generally work as expected,
 		// just be aware of this issue when enabling this option.
 		cssSourceMap: false,
-		sellUrl: 'http://127.0.0.1',
-		openidUrl: 'http://127.0.0.1',
-		wechatPayUrl: 'http://127.0.0.1'
+		sellUrl: 'http://127.0.0.1:8088',
+		openidUrl: 'http://127.0.0.1:8088',
+		wechatPayUrl: 'http://127.0.0.1:8088'
 	}
 }

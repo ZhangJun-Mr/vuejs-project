@@ -59,6 +59,8 @@
           if (response.errno === ERR_OK) {
             this.seller = Object.assign({}, this.seller, response.data);
           }
+        }).catch((error)=>{
+          debugger;
         });
       }
     },
