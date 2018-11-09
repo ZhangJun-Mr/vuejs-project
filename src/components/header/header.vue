@@ -67,7 +67,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import star from 'components/star/star';
+  import star from '../star/star.vue';
 
   export default {
     props: {
