@@ -3,7 +3,7 @@
     <div class="goods">
       <div class="menu-wrapper" ref="menuWrapper">
         <ul>
-          <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}"
+          <li v-for="(item,index) in goods" :key="index" class="menu-item" :class="{'current':currentIndex===index}"
               @click="selectMenu(index,$event)">
           <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
@@ -13,10 +13,10 @@
       </div>
       <div class="foods-wrapper" ref="foodsWrapper">
         <ul>
-          <li v-for="item in goods" class="food-list" ref="foodList">
+          <li v-for="{item, index} in goods" :key="index" class="food-list" ref="foodList">
             <h1 class="title">{{item.name}}</h1>
             <ul>
-              <li v-for="food in item.foods" class="food-item border-1px">
+              <li v-for="food in item.foods" :key="food.id" class="food-item border-1px">
                 <div class="icon">
                   <img width="57" height="57" :src="food.icon">
                 </div>
@@ -27,8 +27,7 @@
                     <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}%</span>
                   </div>
                   <div class="price">
-                    <span class="now">￥{{food.price}}</span><span class="old"
-                                                                  v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+                    <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
                     <cartcontrol @add="addFood" :food="food"></cartcontrol>
@@ -39,19 +38,20 @@
           </li>
         </ul>
       </div>
-      <shopcart ref="shopcart" :selectFoods="selectFoods"  :deliveryPrice="seller.deliveryPrice"
+      <shopcart ref="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"
                 :minPrice="seller.minPrice" :seller="seller"></shopcart>
     </div>
-    <food @add="addFood" :food="selectedFood"  ref="food"></food>
+    <food @add="addFood" :food="selectedFood" ref="food"></food>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
-  import shopcart from 'components/shopcart/shopcart';
-  import cartcontrol from 'components/cartcontrol/cartcontrol';
-  import food from 'components/food/food';
-  var config = require('config')
+  import shopcart from '../shopcart/shopcart';
+  import cartcontrol from '../cartcontrol/cartcontrol';
+  import food from '../food/food';
+
+  var config = require('config');
   config = process.env.NODE_ENV === 'development' ? config.dev : config.build
   const ERR_OK = 0;
 
@@ -94,21 +94,21 @@
       }
     },
     created() {
-        //如果url里有openid, 设置进cookie
-        var openid = this.$route.query.openid;
-        if(typeof openid !== 'undefined') {
-	    var exp = new Date();
-            exp.setTime(exp.getTime() + 3600 * 1000);//过期时间60分钟
-            document.cookie = 'openid=' + openid + ";expires=" + exp.toGMTString();
-        }
-        //获取openid
-        if(getCookie('openid') == null) {
-             location.href = config.openidUrl + '?returnUrl=' +  encodeURIComponent(config.sellUrl + '/#/');
-        }
+      //如果url里有openid, 设置进cookie
+      var openid = this.$route.query.openid;
+      if (typeof openid !== 'undefined') {
+        var exp = new Date();
+        exp.setTime(exp.getTime() + 3600 * 1000);//过期时间60分钟
+        document.cookie = 'openid=' + openid + ";expires=" + exp.toGMTString();
+      }
+      //获取openid
+      if (getCookie('openid') == null) {
+        location.href = config.openidUrl + '?returnUrl=' + encodeURIComponent(config.sellUrl + '/#/');
+      }
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
       let selectedGoods = window.selectedGoods;
       selectedGoods = selectedGoods ? JSON.parse(selectedGoods) : [];
-      this.$http.get('/sell/buyer/product/list').then((response) => {
+      this.$http.get('/api/sell/buyer/product/list').then((response) => {
         response = response.body;
         if (response.code === ERR_OK) {
           selectedGoods.map(item => {
@@ -174,6 +174,7 @@
       },
       _calculateHeight() {
         let foodList = this.$refs.foodList;
+        debugger;
         let height = 0;
         this.listHeight.push(height);
         for (let i = 0; i < foodList.length; i++) {
@@ -191,12 +192,12 @@
   };
 
   function getCookie(name) {
-      var arr;
-      var reg = new RegExp('(^| )' +name+"=([^;]*)(;|$)");
-      if(arr=document.cookie.match(reg))
-          return unescape(arr[2]);
-      else
-          return null;
+    var arr;
+    var reg = new RegExp('(^| )' + name + "=([^;]*)(;|$)");
+    if (arr = document.cookie.match(reg))
+      return unescape(arr[2]);
+    else
+      return null;
   }
 </script>
 

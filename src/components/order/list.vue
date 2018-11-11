@@ -1,6 +1,6 @@
 <template>
     <div infinite-scroll-distance="20" class="orderbody">
-    <a  @click="orderDetail(item)" class="ordercard" v-for="item in orderList">
+    <a  @click="orderDetail(item)" class="ordercard" v-for="{item, index} in orderList" :key="index">
         <div  class="ordercard-body">
             <div  class="ordercard-avatar">
                 <img  src="https://fuss10.elemecdn.com/2/e4/bff50bab2840cdfbffeaf13a20710png.png?imageMogr/format/webp/">
@@ -48,7 +48,7 @@
       };
     },
     created() {
-      this.$http.get('/sell/buyer/order/list', {params: {'openid': getCookie('openid')}}).then((response) => {
+      this.$http.get('/api/sell/buyer/order/list', {params: {'openid': getCookie('openid')}}).then((response) => {
         response = response.body;
         if (response.code === ERR_OK) {
             this.orderList =  response.data;

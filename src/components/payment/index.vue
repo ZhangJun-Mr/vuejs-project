@@ -8,7 +8,7 @@
 		<div class="food-info">
 			<div class="card-hd"><img  class="avator" :src="seller.avatar"><span class="title">{{seller.name}}</span></div>
 
-			<div v-for="item in selectedGoods" class="food-item">
+			<div v-for="{item,index} in selectedGoods" :key="index" class="food-item">
 				<label>{{item.name}}</label>
 				<div class="mount"><span class="number" v-if="item.count > 1">x{{item.count}}</span>¥{{item.count * item.price}}</div>
 			</div>
@@ -52,7 +52,7 @@
                     return {productId: good.id, productQuantity: good.count}
                 });
                 const ERR_OK = 0;
-                this.$http.post("/sell/buyer/order/create", {
+                this.$http.post("/api/sell/buyer/order/create", {
                     'openid': getCookie('openid'),
                     'phone': this.phone,
                     'name': this.name,
@@ -61,6 +61,7 @@
                 ).then((respones) => {
                     respones = respones.body;
                     if (respones.code == ERR_OK) {
+                      debugger;
                       location.href = config.wechatPayUrl +
                         '?openid=' + getCookie('openid') +
                         '&orderId=' + respones.data.orderId +

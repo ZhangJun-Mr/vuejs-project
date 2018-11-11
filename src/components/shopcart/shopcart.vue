@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="ball-container">
-        <div v-for="ball in balls">
+        <div v-for="(ball, index) in balls">
           <transition name="drop" @before-enter="beforeDrop" @enter="dropping" @after-enter="afterDrop">
             <div class="ball" v-show="ball.show">
               <div class="inner inner-hook"></div>
@@ -35,7 +35,7 @@
           </div>
           <div class="list-content" ref="listContent">
             <ul>
-              <li class="food" v-for="food in selectFoods">
+              <li class="food" v-for="{food, index} in selectFoods" :key="index">
                 <span class="name">{{food.name}}</span>
                 <div class="price">
                   <span>￥{{food.price*food.count}}</span>
@@ -57,7 +57,7 @@
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
-  import cartcontrol from 'components/cartcontrol/cartcontrol';
+  import cartcontrol from '../cartcontrol/cartcontrol';
 
   export default {
     props: {
